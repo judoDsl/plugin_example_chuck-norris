@@ -36,25 +36,26 @@ func main() {
 //   - category: The category must be some one of this values ["animal","career","celebrity","dev","explicit","fashion","food","history","money","movie","music","political","religion","science","sport","travel"], also admit an empty value
 func (joker joke) Execute() (interpolator.VarsContent, error) {
 
-	if category, ok := joker.vars["category"]; !ok {
+	category, ok := joker.vars["category"]; 
+	if !ok {
 		return nil, fmt.Errorf("error, plugin '%s' the category params are not setted", CMD_JOKE)
-	} else {
-		url := fmt.Sprintf("https://api.chucknorris.io/jokes/random?category=%s", category)
-		if response, err := http.Get(url); err != nil {
-			return nil, fmt.Errorf("error, calling rest service: %s", err)
-		} else {
-			if responseData, err := ioutil.ReadAll(response.Body); err != nil {
-				return nil, fmt.Errorf("error, reading boy: %s", err)
-			} else {
-				jsonMap := interpolator.VarsContent{}
+	} 
+	url := fmt.Sprintf("https://api.chucknorris.io/jokes/random?category=%s", category)
+	response, err := http.Get(url); 
+	if err != nil {
+		return nil, fmt.Errorf("error, calling rest service: %s", err)
+	} 
+	responseData, err := ioutil.ReadAll(response.Body); 
 
-				if err = json.Unmarshal(responseData, &jsonMap); err != nil {
-					return nil, fmt.Errorf("error, building the Json fromn data: %s", err)
-				}
-				return jsonMap, nil
-			}
-		}
+	if err != nil {
+		return nil, fmt.Errorf("error, reading boy: %s", err)
+	} 
+	
+	jsonMap := interpolator.VarsContent{}
+	if err = json.Unmarshal(responseData, &jsonMap); err != nil {
+		return nil, fmt.Errorf("error, building the Json fromn data: %s", err)
 	}
+	return jsonMap, nil
 }
 
 var commandFactory utils.CommandFactory = func(commandString string, vars interpolator.VarsContent) utils.Command {
