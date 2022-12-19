@@ -1,4 +1,4 @@
-module github.com/JudoDSL/judo_plugin_example-chuck-norris
+module github.com/judoDsl/plugin_example_chuck-norris
 
 go 1.19
 
