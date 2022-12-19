@@ -3,7 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	utils "github.com/judoDSL/judo_utils"
+
+	"github.com/judoDsl/interpolator"
+	utils "github.com/judoDsl/plugin_definitions"
+
 	"io/ioutil"
 	"net/http"
 )
@@ -18,12 +21,12 @@ const (
 )
 
 type joke struct {
-	vars utils.VarsContent
+	vars interpolator.VarsContent
 }
 
 func main() {
 
-	vars := utils.VarsContent{}
+	vars := interpolator.VarsContent{}
 	vars["category"] = "career"
 	content, _ := commandFactory(CMD_JOKE, vars).Execute()
 	fmt.Print(content)
@@ -31,7 +34,7 @@ func main() {
 
 // Command JOKE: it returns a joke related with the category param. List of params:
 //   - category: The category must be some one of this values ["animal","career","celebrity","dev","explicit","fashion","food","history","money","movie","music","political","religion","science","sport","travel"], also admit an empty value
-func (joker joke) Execute() (utils.VarsContent, error) {
+func (joker joke) Execute() (interpolator.VarsContent, error) {
 
 	if category, ok := joker.vars["category"]; !ok {
 		return nil, fmt.Errorf("error, plugin '%s' the category params are not setted", CMD_JOKE)
@@ -43,7 +46,7 @@ func (joker joke) Execute() (utils.VarsContent, error) {
 			if responseData, err := ioutil.ReadAll(response.Body); err != nil {
 				return nil, fmt.Errorf("error, reading boy: %s", err)
 			} else {
-				jsonMap := utils.VarsContent{}
+				jsonMap := interpolator.VarsContent{}
 
 				if err = json.Unmarshal(responseData, &jsonMap); err != nil {
 					return nil, fmt.Errorf("error, building the Json fromn data: %s", err)
@@ -54,7 +57,7 @@ func (joker joke) Execute() (utils.VarsContent, error) {
 	}
 }
 
-var commandFactory utils.CommandFactory = func(commandString string, vars utils.VarsContent) utils.Command {
+var commandFactory utils.CommandFactory = func(commandString string, vars interpolator.VarsContent) utils.Command {
 	var command utils.Command = nil
 	switch commandString {
 	case CMD_JOKE:
