@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	encoding "encoding/json"
 	"fmt"
 
 	"github.com/judoDsl/interpolator"
@@ -28,7 +28,7 @@ func main() {
 
 	vars := interpolator.VarsContent{}
 	vars["category"] = "career"
-	content, _ := commandFactory(CMD_JOKE, vars).Execute()
+	content, _ := CommandFactory(CMD_JOKE, vars).Execute()
 	fmt.Print(content)
 }
 
@@ -52,14 +52,14 @@ func (joker joke) Execute() (interpolator.VarsContent, error) {
 	}
 
 	jsonMap := interpolator.VarsContent{}
-	if err = json.Unmarshal(responseData, &jsonMap); err != nil {
+	if err = encoding.Unmarshal(responseData, &jsonMap); err != nil {
 		return nil, fmt.Errorf("error, building the Json fromn data: %s", err)
 	}
 	return jsonMap, nil
 }
 
-var commandFactory utils.CommandFactory = func(commandString string, vars interpolator.VarsContent) utils.Command {
-	var command utils.Command = nil
+var CommandFactory utils.CommandFactory = func(commandString string, vars interpolator.VarsContent) utils.Command {
+	var command utils.Command = nilx
 	switch commandString {
 	case CMD_JOKE:
 		command = joke{vars: vars}

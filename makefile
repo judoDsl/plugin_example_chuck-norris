@@ -6,4 +6,5 @@ dependecies:
 test: dependecies
 	go test -v
 compile: test
-	go build -buildmode=plugin -o bin/chuck_norris.so main.go
+	go mod vendor
+	env GO111MODULE=on go build --trimpath -buildmode=plugin -o bin/chuck_norris.so main.go
